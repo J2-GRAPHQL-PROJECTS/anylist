@@ -1,4 +1,5 @@
-import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { User } from 'src/users/entities/user.entity';
 
 @ObjectType()
 export class Item {
@@ -9,9 +10,11 @@ export class Item {
 
   @Field(() => String)
   name: string;
-  @Field(() => Float)
-  quantity: number;
-
+  // @Field(() => Float)
+  // quantity: number;
   @Field(() => String, { nullable: true })
   quantityUnits?: string; //g,ml,kg,tsp
+
+  @Field(() => User, { nullable: true })
+  user?: User;
 }

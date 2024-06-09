@@ -5,5 +5,6 @@ import { DbService } from 'src/db/db.service';
 
 @Module({
   providers: [ItemsResolver, ItemsService, DbService],
+  exports: [ItemsService],
 })
 export class ItemsModule {}

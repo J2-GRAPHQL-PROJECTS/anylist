@@ -25,6 +25,7 @@ export class UsersService {
           password: bcrypt.hashSync(signupInput.password, 10),
         },
       });
+      //console.log(newUser);
       return newUser;
     } catch (error) {
       this.errorMessageHandler(error);
@@ -35,7 +36,7 @@ export class UsersService {
     // SI no especifico ningun rol en particular se van a mostrar todos los usuarios
     if (roles.length === 0)
       return await this.dbService.user.findMany({
-        include: { lastUpdateBy: true },
+        include: { lastUpdateBy: true, items: true },
       });
     // en este punto si podemos tener roles ['user','admin','superUser']
     //todo hacer el query con arrays
@@ -47,7 +48,7 @@ export class UsersService {
           hasSome: [...roles],
         },
       },
-      include: { lastUpdateBy: true },
+      include: { lastUpdateBy: true, items: true },
     });
     return users;
   }
@@ -78,6 +79,7 @@ export class UsersService {
         where: {
           email,
         },
+        //include: { lastUpdateBy: true, items: { include: { user: true } } },
         include: { lastUpdateBy: true },
       });
       if (!user) throw Error;
