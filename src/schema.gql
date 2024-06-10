@@ -56,6 +56,7 @@ type Mutation {
   blockUser(id: ID!): User!
   signup(signupInput: SignupInput!): AuthResponse!
   signin(signinInput: SigninInput!): AuthResponse!
+  executeSeed: Boolean!
 }
 
 input CreateItemInput {
