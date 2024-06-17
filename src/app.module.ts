@@ -10,6 +10,7 @@ import { DbModule } from './db/db.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { SeedModule } from './seed/seed.module';
+import { CommonModule } from './common/common.module';
 @Module({
   imports: [
     //!ConfigModule se usa para las variables de entorno
@@ -48,6 +49,7 @@ import { SeedModule } from './seed/seed.module';
     UsersModule,
     AuthModule,
     SeedModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [],

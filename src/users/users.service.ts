@@ -13,6 +13,7 @@ import { DbService } from 'src/db/db.service';
 import * as bcrypt from 'bcrypt';
 import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
 import { UpdateUserInput } from './dto/update-user.input';
+import { PaginationArgs, SearchArgs } from 'src/common/dto/args';
 @Injectable()
 export class UsersService {
   constructor(private readonly dbService: DbService) {}
@@ -32,11 +33,26 @@ export class UsersService {
     }
   }
 
-  async findAll(roles: ValidRoles[]): Promise<User[]> {
+  async findAll(
+    roles: ValidRoles[],
+    paginationArgs: PaginationArgs,
+    searchArgs: SearchArgs,
+  ): Promise<User[]> {
     // SI no especifico ningun rol en particular se van a mostrar todos los usuarios
+    const { offset, limit } = paginationArgs;
+    const { search } = searchArgs;
     if (roles.length === 0)
       return await this.dbService.user.findMany({
-        include: { lastUpdateBy: true, items: true },
+        skip: !offset ? 0 : offset,
+        take: !limit ? 10 : limit,
+        where: {
+          fullName: { contains: !search ? '' : search, mode: 'insensitive' },
+        },
+
+        include: {
+          lastUpdateBy: true,
+          //items: true,
+        },
       });
     // en este punto si podemos tener roles ['user','admin','superUser']
     //todo hacer el query con arrays
@@ -48,7 +64,10 @@ export class UsersService {
           hasSome: [...roles],
         },
       },
-      include: { lastUpdateBy: true, items: true },
+      include: {
+        lastUpdateBy: true,
+        //items: true,
+      },
     });
     return users;
   }

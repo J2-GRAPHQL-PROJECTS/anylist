@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateItemInput, IdItem, UpdateItemInput } from './dto/';
 import { Item } from './entities/item.entity';
 import { DbService } from 'src/db/db.service';
+import { PaginationArgs, SearchArgs } from 'src/common/dto/args';
 
 @Injectable()
 export class ItemsService {
@@ -25,11 +26,46 @@ export class ItemsService {
     return newItem;
   }
 
-  async findAll(currentUserId: string): Promise<Item[]> {
+  async findAll(
+    currentUserId: string,
+    paginationArgs: PaginationArgs,
+    searchArgs: SearchArgs,
+  ): Promise<Item[]> {
     //return `This action returns all items`;
     //console.log(currentUserId);
+    //console.log(paginationArgs);
+
+    const { offset, limit } = paginationArgs;
+    const { search } = searchArgs;
+    // console.log('offset', JSON.stringify(offset, null, 2));
+    // console.log('limit', JSON.stringify(limit, null, 2));
+    // console.log('search', JSON.stringify(search, null, 2));
+
+    //! si ingresan explicitamente los valores null en los args desde el apolo client causara un error en base de datos por ese motivo hay que hacer la validacion con el operador ternario
+
+    //!Enfoque 1 con rawQuery no optimo
+    // const idItems = await this.dbService.$queryRaw<
+    //   {
+    //     id: string;
+    //   }[]
+    // >`select id from public."Item" where "userId"=${currentUserId} and lower("name") like ${!search ? '%%' : `%${search}%`} `;
+    // console.log(idItems);
+    // return await this.dbService.item.findMany({
+    //   skip: !offset ? 0 : offset,
+    //   take: !limit ? 10 : limit,
+    //   // el field in evalua un array
+    //   where: { id: { in: idItems.map((row) => row.id) } },
+    //   include: { user: true },
+    // });
+
+    //!Enfoque 2 100% optimo
     return await this.dbService.item.findMany({
-      where: { userId: currentUserId },
+      skip: !offset ? 0 : offset,
+      take: !limit ? 10 : limit,
+      where: {
+        userId: currentUserId,
+        name: { contains: !search ? '' : search, mode: 'insensitive' },
+      },
       include: { user: true },
     });
   }

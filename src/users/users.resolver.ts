@@ -17,6 +17,8 @@ import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
 import { UpdateUserInput } from './dto/update-user.input';
 import { ItemsService } from 'src/items/items.service';
+import { Item } from 'src/items/entities/item.entity';
+import { PaginationArgs, SearchArgs } from 'src/common/dto/args';
 
 // import { CreateUserInput } from './dto/create-user.input';
 // import { UpdateUserInput } from './dto/update-user.input';
@@ -48,9 +50,15 @@ export class UsersResolver {
     //!SOlo usuarios con rol admin pueden ingresar
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @CurrentUser([ValidRoles.admin, ValidRoles.superUser]) user: User,
+    @Args() paginationArgs: PaginationArgs,
+    @Args() searchArgs: SearchArgs,
   ): Promise<User[]> {
     //console.log(user);
-    return await this.usersService.findAll(validRoles.roles);
+    return await this.usersService.findAll(
+      validRoles.roles,
+      paginationArgs,
+      searchArgs,
+    );
   }
 
   @Query(() => User, { name: 'user' })
@@ -85,7 +93,7 @@ export class UsersResolver {
     return this.usersService.blockUser(id, user);
   }
 
-  //!Creamos un field personazlidado que aparecera como un query con nombre itemCount
+  //!Creamos un field personalizado que aparecera como un query con nombre itemCount
   @ResolveField(() => Int, { name: 'itemCount' })
   //!Con el decorador @Parent tenemos acceso a los datos del field que lo contiene, en este caso user
   // query Query {
@@ -101,5 +109,25 @@ export class UsersResolver {
     @CurrentUser([ValidRoles.admin, ValidRoles.superUser]) adminUser: User,
   ): Promise<number> {
     return await this.itemsService.coutItemByUser(user.id);
+  }
+
+  //!Creamos un field personalizado que aparecera como un query con nombre itemCount
+  @ResolveField(() => [Item], { name: 'items' })
+  //!Con el decorador @Parent tenemos acceso a los datos del field que lo contiene, en este caso user
+  // query Query {
+  //   users {
+  //     itemCount
+  //     fullName
+  //     email
+  //   }
+  // }
+  async getItemsByUser(
+    @Parent() user: User,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @CurrentUser([ValidRoles.admin, ValidRoles.superUser]) adminUser: User,
+    @Args() paginationArgs: PaginationArgs,
+    @Args() searchArgs: SearchArgs,
+  ): Promise<Item[]> {
+    return await this.itemsService.findAll(user.id, paginationArgs, searchArgs);
   }
 }
