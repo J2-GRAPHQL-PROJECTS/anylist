@@ -1,5 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Item } from 'src/items/entities/item.entity';
+import { List } from 'src/lists/entities/list.entity';
 
 @ObjectType()
 export class User {
@@ -25,4 +26,5 @@ export class User {
 
   @Field(() => [Item], { nullable: true }) //Asi no tenga items mostrara un array vacio
   items?: Item[];
+  list?: List[];
 }

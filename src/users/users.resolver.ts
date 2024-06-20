@@ -19,6 +19,8 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { ItemsService } from 'src/items/items.service';
 import { Item } from 'src/items/entities/item.entity';
 import { PaginationArgs, SearchArgs } from 'src/common/dto/args';
+import { ListsService } from 'src/lists/lists.service';
+import { List } from 'src/lists/entities/list.entity';
 
 // import { CreateUserInput } from './dto/create-user.input';
 // import { UpdateUserInput } from './dto/update-user.input';
@@ -31,6 +33,7 @@ export class UsersResolver {
   constructor(
     private readonly usersService: UsersService,
     private readonly itemsService: ItemsService,
+    private readonly listsService: ListsService,
   ) {}
 
   // @Mutation(() => User)
@@ -94,7 +97,7 @@ export class UsersResolver {
   }
 
   //!Creamos un field personalizado que aparecera como un query con nombre itemCount
-  @ResolveField(() => Int, { name: 'itemCount' })
+  @ResolveField(() => Int, { name: 'itemsCount' })
   //!Con el decorador @Parent tenemos acceso a los datos del field que lo contiene, en este caso user
   // query Query {
   //   users {
@@ -108,19 +111,12 @@ export class UsersResolver {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @CurrentUser([ValidRoles.admin, ValidRoles.superUser]) adminUser: User,
   ): Promise<number> {
-    return await this.itemsService.coutItemByUser(user.id);
+    return await this.itemsService.countItemByUser(user.id);
   }
 
   //!Creamos un field personalizado que aparecera como un query con nombre itemCount
   @ResolveField(() => [Item], { name: 'items' })
   //!Con el decorador @Parent tenemos acceso a los datos del field que lo contiene, en este caso user
-  // query Query {
-  //   users {
-  //     itemCount
-  //     fullName
-  //     email
-  //   }
-  // }
   async getItemsByUser(
     @Parent() user: User,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -129,5 +125,29 @@ export class UsersResolver {
     @Args() searchArgs: SearchArgs,
   ): Promise<Item[]> {
     return await this.itemsService.findAll(user.id, paginationArgs, searchArgs);
+  }
+
+  //!Creamos un field personalizado que aparecera como un query con nombre itemCount
+  @ResolveField(() => [List], { name: 'lists' })
+  //!Con el decorador @Parent tenemos acceso a los datos del field que lo contiene, en este caso user
+  async getListsByUser(
+    @Parent() user: User,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @CurrentUser([ValidRoles.admin, ValidRoles.superUser]) adminUser: User,
+    @Args() paginationArgs: PaginationArgs,
+    @Args() searchArgs: SearchArgs,
+  ): Promise<Item[]> {
+    return await this.listsService.findAll(user.id, paginationArgs, searchArgs);
+  }
+
+  //!Creamos un field personalizado que aparecera como un query con nombre itemCount
+  @ResolveField(() => Int, { name: 'listCount' })
+  //!Con el decorador @Parent tenemos acceso a los datos del field que lo contiene, en este caso user
+  async listCount(
+    @Parent() user: User,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @CurrentUser([ValidRoles.admin, ValidRoles.superUser]) adminUser: User,
+  ): Promise<number> {
+    return await this.listsService.countListByUser(user.id);
   }
 }

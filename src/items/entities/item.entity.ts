@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { ListItem } from 'src/list-item/entities/list-item.entity';
 import { User } from 'src/users/entities/user.entity';
 
 @ObjectType()
@@ -17,4 +18,5 @@ export class Item {
 
   @Field(() => User, { nullable: true })
   user?: User;
+  listItem?: ListItem[];
 }

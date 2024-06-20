@@ -36,7 +36,7 @@ export class ItemsResolver {
   }
 
   @Query(() => Item, { name: 'findOneItem' })
-  //@Args('id', { type: () => ID }, ParseUUIDPipe ) id: string
+  //@Args('id',{type: () => ID},ParseUUIDPipe) idItem: string
   //! Lo maneje con un ArgsType()
   findOne(
     @Args() idItem: IdItem,
@@ -60,6 +60,8 @@ export class ItemsResolver {
     description: 'devuelve el item eliminado',
   })
   async removeItem(
+    //! Tambien se puede hacer de la siguiente manera en @args cuabdo es query sin necesidad de crear un ArgType
+    //@Args('id',{type: () => ID},ParseUUIDPipe) idItem: string
     @Args() idItem: IdItem,
     @CurrentUser() currentUser: User,
   ): Promise<Item> {

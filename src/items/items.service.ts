@@ -1,12 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateItemInput, IdItem, UpdateItemInput } from './dto/';
 import { Item } from './entities/item.entity';
 import { DbService } from 'src/db/db.service';
 import { PaginationArgs, SearchArgs } from 'src/common/dto/args';
+import { HandlerErrorService } from 'src/handler-error/handler-error.service';
 
 @Injectable()
 export class ItemsService {
-  constructor(private readonly dbService: DbService) {}
+  constructor(
+    private readonly dbService: DbService,
+    private readonly handlerError: HandlerErrorService,
+  ) {}
 
   async create(
     currentUserId: string,
@@ -80,7 +84,10 @@ export class ItemsService {
       //   throw new NotFoundException(`Item with id ${idItem.id} not found`);
       return item;
     } catch (error) {
-      this.handlerErrorException(error);
+      this.handlerError.handlerErrorException(
+        error,
+        `Item with id ${idItem.id} not found`,
+      );
     }
   }
 
@@ -117,12 +124,13 @@ export class ItemsService {
     });
     return itemDeleted;
   }
-  async coutItemByUser(userId: string): Promise<number> {
+  async countItemByUser(userId: string): Promise<number> {
     return await this.dbService.item.count({ where: { userId } });
   }
-  private handlerErrorException(error: any) {
-    //console.log({ error });
-    console.log(error.message);
-    if (error.code === 'P2025') throw new NotFoundException(`Item not found`);
-  }
+
+  // private handlerErrorException(error: any) {
+  //   //console.log({ error });
+  //   console.log(error.message);
+  //   if (error.code === 'P2025') throw new NotFoundException(`Item not found`);
+  // }
 }

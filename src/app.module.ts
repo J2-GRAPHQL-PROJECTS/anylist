@@ -11,6 +11,9 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { SeedModule } from './seed/seed.module';
 import { CommonModule } from './common/common.module';
+import { ListsModule } from './lists/lists.module';
+import { HandlerErrorModule } from './handler-error/handler-error.module';
+import { ListItemModule } from './list-item/list-item.module';
 @Module({
   imports: [
     //!ConfigModule se usa para las variables de entorno
@@ -50,6 +53,9 @@ import { CommonModule } from './common/common.module';
     AuthModule,
     SeedModule,
     CommonModule,
+    ListsModule,
+    HandlerErrorModule,
+    ListItemModule,
   ],
   controllers: [],
   providers: [],
