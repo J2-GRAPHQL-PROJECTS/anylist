@@ -10,7 +10,7 @@ import {
 import { User } from './entities/user.entity';
 import { SignupInput } from '../auth/dto/inputs/signup.input';
 import { DbService } from 'src/db/db.service';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
 import { UpdateUserInput } from './dto/update-user.input';
 import { PaginationArgs, SearchArgs } from 'src/common/dto/args';

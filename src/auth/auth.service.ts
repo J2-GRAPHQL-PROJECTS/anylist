@@ -8,7 +8,7 @@ import { DbService } from '../db/db.service';
 //import { User } from 'src/users/entities/user.entity';
 import { SignupInput, SigninInput } from './dto/inputs';
 import { UsersService } from 'src/users/users.service';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/entities/user.entity';
 @Injectable()

@@ -10,9 +10,17 @@
 npm install
 ```
 4. Levantar la imagen de docker
+
 ```
-docker compose up -dev --remove-orphans
+Formato corto: Por defecto lee el archivo .env y el docker-compose.yml.
+docker compose up -d --remove-orphans
+
+Formato Largo:
+docker-compose -f docker-compose.yml --env-file .env up --remove-orphans -d
 ```
+
+
+
 5. Levantar nest
 ```
 npm run start:dev
@@ -22,3 +30,5 @@ npm run start:dev
 http://localhost:3000/graphql
 ```
 7. Ejecutar la "mutation" executeSeed, para llenar la base de datos con información
+
+8. Para crear las imagenes de docker es necesario cambiar la dependencia bcrypt por bcryptjs e instalar su respectiva dependencia para el typado esctricto. al parecer el linux alpine tiene conflicto con la libreria bcrypt y no con bcryptjs
