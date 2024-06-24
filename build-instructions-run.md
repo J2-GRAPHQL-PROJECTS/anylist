@@ -19,9 +19,10 @@ Ingresar a Docker Hub
 docker login
 ```
 
-Subir imagen
+#Subir imagen
 ```
 docker push <usuario docker hub>/<nombre repositorio>
+docker push jotacollantes/nest-graphql-prod:1.0.0
 ```
 
 # Para crear la imagen sin el docker-compose
@@ -31,4 +32,8 @@ docker build -t nest-graphql-prod
 # Para ejecutar la imagen sin el docker-compose
 ```
 docker run --env-file=.env.prod -p 4000:4000 nest-graphql-prod
+```
+# Para cambiar de nombre a una imagen
+```
+docker tag nest-graphql jotacollantes/nest-graphql-prod:1.0.0
 ```
